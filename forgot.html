@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+    <title>Forgot Password</title>
+     <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <H2>Input Username: If there is a match, you will be prompted to enter the answer to your secret question</H2>
+        <input id = "userinput" type="text" name="username" placeholder="Username"></input>
+        <button onclick="getQuestion()">Submit</button>
+    <p id="secretques"></p>
+    <input id="answer" type = "text" placeholder="Enter the answer here"></input>
+    <button id="tryques" onclick="tryQuestion()">Submit</button>
+    <input id="newPass" type="text" placeholder="New Password Here"></input>
+    <button id="newPassButton" onclick="newPass()">Reset Password</button>
+    <p id="passaccept"></p>
+    <script>
+    
+    window.onload = function(){
+        $("#answer").hide();
+        $("#tryques").hide();
+        $("#newPass").hide();
+        $("#newPassButton").hide();
+    };
+        function getQuestion(){
+            var userinput = document.getElementById("userinput").value;
+            $.ajax({
+                 type: "POST",
+                 url: "forgot.php",
+                 data: {single_val: userinput},
+                 success: function(response){
+                     document.getElementById("secretques").innerHTML=response;
+                     $("#answer").show();
+                     $("#tryques").show();
+                 }
+               });
+        }
+        function tryQuestion(){
+            var answertry = document.getElementById("answer").value;
+            $.ajax({
+                 type: "POST",
+                 url: "forgot2.php",
+                 data: {single_val: answertry},
+                 success: function(response){
+                     if(response!=""){
+                     $("#newPass").show();
+                     $("#newPassButton").show();
+                     }
+                 }
+               });
+        }
+        function newPass(){
+            var userinput = document.getElementById("newPass").value;
+            var username = document.getElementById("userinput").value;
+            $.ajax({
+                 type: "POST",
+                 url: "forgot3.php",
+                 data: {username:username,newpass:userinput},
+                 success: function(response){
+                     document.getElementById("passaccept").innerHTML=response;
+                 }
+               });
+        }
+    </script>
+</html>
