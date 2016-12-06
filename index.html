@@ -1,7 +1,10 @@
 <!doctype html>
 <html>
   <head>
-    <title>Least Secure Login</title>
+    <title>Adam-Book</title>
+    <meta name="google-signin-client_id" content="47190128805-iebqhc0bbiq9sfh751k415klc2eskra6.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
   </head>
   <body>
     <form action="auth.php" method="post">
@@ -9,5 +12,42 @@
       <input type="password" name="password" placeholder="password"></input>
       <button type="submit">Send form</button>
     </form>
+      <button type="register" onclick="location='reg.html'" />Register</button>
+      <button type="forgot" onclick="location='forgot.html'" >Forgot Password?</button>
+      
+      <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <h3 id="user-data" class="logged-out">Hello there <span id="username">Your Name Here</span></h3>
+    <h6 id="log-out">Log Out Of This App</h6>
   </body>
+    <script type="text/javascript">
+    function onSignIn(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      document.getElementById("username").innerHTML = profile.getName();
+      document.querySelector("#user-data").classList.remove("logged-out");
+      console.log('Email: ' + profile.getEmail());
+      $.ajax({
+                 type: "POST",
+                 url: "auth.php",
+                 data: {single_val: profile.getName()},
+                 success: function(response){
+                     console.log("successful login to backend");
+                 }
+               });
+      //window.location.href = "https://weak-login-akarpz.c9users.io/auth.php";
+    }
+  
+    document.getElementById("log-out").addEventListener("click", signOut);
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+        document.querySelector("#user-data").classList.add("logged-out");
+      });
+    }
+  </script>
+    <style>
+    .logged-out {
+      display: none;
+    }
+  </style>
 </html>
